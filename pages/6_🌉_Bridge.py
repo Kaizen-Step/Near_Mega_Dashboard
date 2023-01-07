@@ -11,7 +11,7 @@ week_days = ['Monday', 'Tuesday', 'Wednesday',
              'Thursday', 'Friday', 'Saturday', 'Sunday']
 
 # Layout
-st.set_page_config(page_title='Bridge - Terra Dashboard',
+st.set_page_config(page_title='Bridge - Near Dashboard',
                    page_icon=':bar_chart:', layout='wide')
 st.title('🌉Bridge')
 
@@ -23,107 +23,69 @@ with open('style.css')as f:
 # Data Sources
 @st.cache()
 def get_data(query):
-    if query == 'bridge_out_daily':
-        return pd.read_json('https://node-api.flipsidecrypto.com/api/v2/queries/d59ec417-b905-445c-9d10-e61344b42394/data/latest')
-    elif query == 'Distribution_bridged_out_Volume':
-        return pd.read_json('https://node-api.flipsidecrypto.com/api/v2/queries/d9346ec3-b6d2-45da-ba43-41b03afd888c/data/latest')
-    elif query == 'Distribution_transactions':
-        return pd.read_json('https://node-api.flipsidecrypto.com/api/v2/queries/2e347a2a-488f-40da-a826-f7529be78fba/data/latest')
+    if query == 'Near_Bridge5':
+        return pd.read_json('https://node-api.flipsidecrypto.com/api/v2/queries/62a94ba4-64a4-4bee-bf00-09cf995e5c78/data/latest')
+    elif query == 'Near_Bridge3':
+        return pd.read_json('https://node-api.flipsidecrypto.com/api/v2/queries/b3bbad0f-0d6c-4bb9-9379-748182d0d051/data/latest')
+    elif query == 'Near_Bridge2':
+        return pd.read_json('https://node-api.flipsidecrypto.com/api/v2/queries/92267a89-0f8d-48b1-91bb-f10260c0d1c0/data/latest')
     elif query == 'daily_bridge_detail':
         return pd.read_json('https://node-api.flipsidecrypto.com/api/v2/queries/3b5c115f-5335-4233-b6a8-9bd9ffec9226/data/latest')
     return None
 
 
-bridge_out_daily = get_data('bridge_out_daily')
-Distribution_bridged_out_Volume = get_data('Distribution_bridged_out_Volume')
-Distribution_transactions = get_data('Distribution_transactions')
+Near_Bridge5 = get_data('Near_Bridge5')
+Near_Bridge3 = get_data('Near_Bridge3')
+Near_Bridge2 = get_data('Near_Bridge2')
 daily_bridge_detail = get_data('daily_bridge_detail')
 
-st.subheader('Transaction Charts')
+st.subheader('Bridge Charts')
 
-df = bridge_out_daily
-df2 = Distribution_bridged_out_Volume
-df3 = Distribution_transactions
+df = Near_Bridge5
+df2 = Near_Bridge3
+df3 = Near_Bridge2
 df4 = daily_bridge_detail
 
-# Daily bridged out volume
-fig = sp.make_subplots(specs=[[{'secondary_y': True}]])
-fig.add_trace(go.Bar(x=df["DATE"], y=df["VOLUME"],
-                     name='Volume'), secondary_y=False)
-fig.add_trace(go.Line(x=df["DATE"], y=df["CUMULATIVE_VOLUME"],
-                      name='CUMULATIVE Volume'), secondary_y=True)
-fig.update_layout(
-    title_text='Daily bridged out volume'.title())
-fig.update_yaxes(
-    title_text='Volume', secondary_y=False)
-fig.update_yaxes(title_text='CUMULATIVE Volume', secondary_y=True)
-st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
-
-# Beidge out-Daily Users
-fig = sp.make_subplots(specs=[[{'secondary_y': True}]])
-fig.add_trace(go.Bar(x=df["DATE"], y=df["ACTIVE_USERS"],
-                     name="ACTIVE USERS".title()), secondary_y=False)
-fig.add_trace(go.Line(x=df["DATE"], y=df["CUMULATIVE_USERS"],
-                      name="CUMULATIVE USERS".title()), secondary_y=True)
-fig.update_layout(
-    title_text='Beidge out Daily Users'.title())
-fig.update_yaxes(
-    title_text='ACTIVE USERS', secondary_y=False)
-fig.update_yaxes(title_text='CUMULATIVE USERS', secondary_y=True)
-st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
-
-# Distribution of users based on "bridged out" Volume
-fig = px.bar(df2, x="BRIDGE_RANGE", y="NUMBER_OF_USERS",
-             color="BRIDGE_RANGE", title='Distribution of users based on bridge Out Volume')
-fig.update_layout(showlegend=True, xaxis_title='NUMBER OF USERS'.title(),
+# Cumulative bridge from Ethereum to NEAR - (Weekly volume in $USD)
+fig = px.line(df, x="DATE", y="CUM_TOTAL_AMOUNT_USD",
+              color="SYMBOL", title='Cumulative bridge from Ethereum to NEAR - (Weekly volume in $USD)')
+fig.update_layout(showlegend=True, xaxis_title='NUMBER_TRANSACTIONS'.title(),
                   yaxis_title=None)
 st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
 
-# Distribution of transactions based on "bridged out" Volume
-fig = px.bar(df3, x="BRIDGE_RANGE", y="NUMBER_OF_BRIDGES",
-             color="BRIDGE_RANGE", title='Distribution of transactions based on bridged out Volume'.title())
-fig.update_layout(showlegend=True, xaxis_title='NUMBER OF Bridge'.title(),
-                  yaxis_title=None)
+# Weekly USERs of Bridge from Ethereum to NEAR by Token
+fig = px.bar(df2.sort_values(["DATE", "UNIQUE_WALLETS_FROM"], ascending=[
+    True, False]), x="DATE", y="UNIQUE_WALLETS_FROM", color="SYMBOL", title='Weekly USERs of Bridge from Ethereum to NEAR by Token'.title())
+fig.update_layout(legend_title=None, xaxis_title=None,
+                  yaxis_title='Number of Users')
 st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
 
-# Daily bridged out Transactions-(Normalized)
-fig = px.histogram(df4, x="DATE", y="NUMBER_OF_TRANSACTIONS", color="BLOCKCHAIN",
-                   title='Daily bridged out Transactions', barnorm='percent')
-fig.update_layout(legend_title=None, xaxis_title=None, yaxis_title=None, xaxis={
-                  'categoryorder': 'category ascending'})
+# Weekly Number of Bridge transactions from Ethereum to NEAR by Token
+fig = px.bar(df2.sort_values(["DATE", "NUMBER_TRANSACTIONS"], ascending=[
+    True, False]), x="DATE", y="NUMBER_TRANSACTIONS", color="SYMBOL", title='Weekly Number of Bridge transactions from Ethereum to NEAR by Token'.title())
+fig.update_layout(legend_title=None, xaxis_title=None,
+                  yaxis_title='Number of TX')
 st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
 
-# Daily bridged out Users-(Normalized)
-fig = px.histogram(df4, x="DATE", y="BRIDGER", color="BLOCKCHAIN",
-                   title='Daily bridged out Users', barnorm='percent')
-fig.update_layout(legend_title=None, xaxis_title=None, yaxis_title=None, xaxis={
-                  'categoryorder': 'category descending'})
+
+# Weekly Volume (USD) of Bridge Transactions from Ethereum to NEAR by Token
+fig = px.bar(df2.sort_values(["DATE", "USD_VOLUME"], ascending=[
+    True, False]), x="DATE", y="USD_VOLUME", color="SYMBOL", title='Weekly Volume (USD) of Bridge Transactions from Ethereum to NEAR by Token'.title())
+fig.update_layout(legend_title=None, xaxis_title=None,
+                  yaxis_title='Volume [USD]')
 st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
 
-# Daily bridged out Volume-(Normalized)
-fig = px.histogram(df4, x="DATE", y="VOLUME", color="BLOCKCHAIN",
-                   title='Daily bridged out Volume', barnorm='percent')
-fig.update_layout(legend_title=None, xaxis_title=None, yaxis_title=None, xaxis={
-                  'categoryorder': 'category descending'})
-st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
 
-# Bridge out Transactions based on Blockchains
-fig = px.pie(df4, values="NUMBER_OF_TRANSACTIONS",
-             names="BLOCKCHAIN", title='Bridge out Transactions based on Blockchains')
+# Proportion of Volume Bridged From Ethereum to NEAR by Token
+fig = px.pie(df2, values="USD_VOLUME",
+             names="SYMBOL", title='Proportion of Volume Bridged From Ethereum to NEAR by Token')
 fig.update_layout(legend_title=None, legend_y=0.5)
 fig.update_traces(textinfo='percent+value', textposition='inside')
 st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
 
-# Bridge out users based on Blockchains
-fig = px.pie(df4, values="BRIDGER",
-             names="BLOCKCHAIN", title='Bridge out users based on Blockchains')
-fig.update_layout(legend_title=None, legend_y=0.5)
-fig.update_traces(textinfo='percent+value', textposition='inside')
-st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
-
-# Bridge out volume based on Blockchains
-fig = px.pie(df4, values="VOLUME",
-             names="BLOCKCHAIN", title='Bridge out volume based on Blockchains')
-fig.update_layout(legend_title=None, legend_y=0.5)
-fig.update_traces(textinfo='percent+value', textposition='inside')
+# Top Categories in terms of actions after bridging to Near: Number of transactions, normalised
+fig = px.area(df3, x="DATE", y="NUMBER_TRANSACTIONS", color="APP_USED",
+              title='Top Categories in terms of actions after bridging to Near: Number of transactions, normalised', groupnorm='percent')
+fig.update_layout(legend_title=None, xaxis_title=None,
+                  yaxis_title="NUMBER_TRANSACTIONS")
 st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
