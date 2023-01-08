@@ -49,7 +49,10 @@ NearTop10Contracts_Transactions = get_data('NearTop10Contracts_Transactions')
 NearTop_newcontracts_fee = get_data('NearTop_newcontracts_fee')
 NearWeekly_TopContracts_users = get_data('NearWeekly_TopContracts_users')
 
-st.subheader('Development Charts')
+st.text(" \n")
+st.subheader('New Contract Metrics')
+
+
 df = Near_Dev_New_contracts
 df2 = Near_DevTopnew_weekly_transactions
 df3 = Near_TopContracts_Transactions
@@ -57,13 +60,6 @@ df4 = Near_TopNew_Fee
 df5 = NearTop10Contracts_Transactions
 df6 = NearTop_newcontracts_fee
 df7 = NearWeekly_TopContracts_users
-
-# Top new contracts Based on average transactions fee
-fig = px.area(df6, x="DATE", y="AVG_TX_FEE", color="TX_RECEIVER",
-              title='Top new contracts Based on average transactions fee')
-fig.update_layout(legend_title=None, xaxis_title=None,
-                  yaxis_title='AVG_TX_FEE')
-st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
 
 # Top new contracts based on weekly transactions
 fig = px.bar(df2.sort_values(["DATE", "TRANSACTIONS"], ascending=[
@@ -85,18 +81,11 @@ fig.update_yaxes(
 fig.update_yaxes(title_text="Cum New Contract", secondary_y=True)
 st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
 
-# Weekly Top Contracts Based on Transactions
-fig = px.bar(df3.sort_values(["DATE", "COUNT"], ascending=[
-    True, False]), x="DATE", y="COUNT", color="CONTRACT", title='Weekly Top Contracts Based on Transactions')
+# Top new contracts Based on average transactions fee
+fig = px.area(df6, x="DATE", y="AVG_TX_FEE", color="TX_RECEIVER",
+              title='Top new contracts Based on average transactions fee')
 fig.update_layout(legend_title=None, xaxis_title=None,
-                  yaxis_title='Count')
-st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
-
-# Most popular Contracts
-fig = px.pie(df3, values="COUNT",
-             names="CONTRACT", title='Most popular Contracts')
-fig.update_layout(legend_title=None, legend_y=0.5)
-fig.update_traces(textinfo='percent+value', textposition='inside')
+                  yaxis_title='AVG TX Fee')
 st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
 
 # Top New Contracts Based on Total Transactions Fee
@@ -106,11 +95,32 @@ fig.update_layout(legend_title=None, xaxis_title=None,
                   yaxis_title="TOTAL TX FEE".title())
 st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
 
-# Near Dev- Top 10 Contracts Based on Transactions
-fig = px.bar(df5, x="CONTRACT_ADDRESS", y="TRANSACTIONS", color="CONTRACT_ADDRESS",
-             title='Near Dev- Top 10 Contracts Based on Transactions')
+st.text(" \n")
+st.text(" \n")
+st.text(" \n")
+st.subheader('Overall Contract Metrics')
+
+
+# Weekly Top Contracts Based on Transactions
+fig = px.bar(df3.sort_values(["DATE", "COUNT"], ascending=[
+    True, False]), x="DATE", y="COUNT", color="CONTRACT", title='Weekly Top Contracts Based on Transactions')
 fig.update_layout(legend_title=None, xaxis_title=None,
-                  yaxis_title="TRANSACTIONS".title())
+                  yaxis_title='Transactions')
+st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
+
+# Weekly Top Contracts Based on users
+fig = px.bar(df7.sort_values(["DATE", "USERS"], ascending=[
+    True, False]), x="DATE", y="USERS", color="CONTRACT", title='Weekly Top Contracts Based on Transactions')
+fig.update_layout(legend_title=None, xaxis_title=None,
+                  yaxis_title='Transactions')
+st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
+
+
+# Most popular Contracts Based on Transactions
+fig = px.pie(df3, values="COUNT",
+             names="CONTRACT", title='Most popular Contracts Based on Transactions')
+fig.update_layout(legend_title=None, legend_y=0.5)
+fig.update_traces(textinfo='percent+value', textposition='inside')
 st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
 
 
@@ -121,9 +131,9 @@ fig.update_layout(legend_title=None, legend_y=0.5)
 fig.update_traces(textinfo='percent+value', textposition='inside')
 st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
 
-# Weekly Top Contracts Based on users
-fig = px.bar(df7.sort_values(["DATE", "USERS"], ascending=[
-    True, False]), x="DATE", y="USERS", color="CONTRACT", title='Weekly Top Contracts Based on Transactions')
+# Near Dev- Top 10 Contracts Based on Transactions
+fig = px.bar(df5, x="CONTRACT_ADDRESS", y="TRANSACTIONS", color="CONTRACT_ADDRESS",
+             title='Top 10 Contracts Based on Transactions')
 fig.update_layout(legend_title=None, xaxis_title=None,
-                  yaxis_title='Count')
+                  yaxis_title="TRANSACTIONS".title())
 st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)

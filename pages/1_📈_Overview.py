@@ -4,6 +4,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.subplots as sp
+from PIL import Image
 
 # Global Variables
 theme_plotly = None  # None or streamlit
@@ -15,12 +16,13 @@ st.set_page_config(page_title='Overview - Near Dashboard',
                    page_icon=':bar_chart:', layout='wide')
 st.title('📈Overview')
 
+
 # Style
 with open('style.css')as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# Data Sources
 
+# Data Sources
 
 @st.cache()
 def get_data(query):
@@ -58,7 +60,9 @@ Overview_Near_Bridge = get_data('Overview_Near_Bridge')
 Overview_HeatmapTX2 = get_data('Overview_HeatmapTX2')
 Overview_NEARheatmap2 = get_data('Overview_NEARheatmap2')
 # Single Number Overview
-st.subheader('Overview')
+st.text(" \n")
+st.subheader('Glance')
+
 
 df = Overview_Total_Contracts
 df2 = Overview_NearTX
@@ -99,7 +103,7 @@ with c3:
     st.metric(label='**Users Bridged Ethereum to NEAR**',
               value=df8["UNIQUE_USERS"].map('{:,.0f}'.format).values[0])
 
-
+st.text(" \n")
 st.text(" \n")
 st.text(" \n")
 st.subheader('HeatMaps')

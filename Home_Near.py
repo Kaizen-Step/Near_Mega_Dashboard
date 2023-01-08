@@ -11,6 +11,7 @@ st.title('Near Dashboard')
 c1, c2, c3, c4 = st.columns(4)
 c4.image(Image.open('Images/near-logo.png'))
 
+
 with c1:
     st.text(" \n")
     st.text(" \n")

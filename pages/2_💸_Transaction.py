@@ -36,6 +36,7 @@ NEAR_TX1 = get_data('NEAR_TX1')
 NEAR_TX3 = get_data('NEAR_TX3')
 Near_TX_Interval = get_data('Near_TX_Interval')
 
+st.text(" \n")
 st.subheader('Transaction Charts')
 
 df = NEAR_TX1

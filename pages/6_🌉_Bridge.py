@@ -39,19 +39,15 @@ Near_Bridge3 = get_data('Near_Bridge3')
 Near_Bridge2 = get_data('Near_Bridge2')
 daily_bridge_detail = get_data('daily_bridge_detail')
 
-st.subheader('Bridge Charts')
+st.text(" \n")
+st.subheader('Bridging Metrics')
+
 
 df = Near_Bridge5
 df2 = Near_Bridge3
 df3 = Near_Bridge2
 df4 = daily_bridge_detail
 
-# Cumulative bridge from Ethereum to NEAR - (Weekly volume in $USD)
-fig = px.line(df, x="DATE", y="CUM_TOTAL_AMOUNT_USD",
-              color="SYMBOL", title='Cumulative bridge from Ethereum to NEAR - (Weekly volume in $USD)')
-fig.update_layout(showlegend=True, xaxis_title='NUMBER_TRANSACTIONS'.title(),
-                  yaxis_title=None)
-st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
 
 # Weekly USERs of Bridge from Ethereum to NEAR by Token
 fig = px.bar(df2.sort_values(["DATE", "UNIQUE_WALLETS_FROM"], ascending=[
@@ -75,17 +71,28 @@ fig.update_layout(legend_title=None, xaxis_title=None,
                   yaxis_title='Volume [USD]')
 st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
 
+# Top Categories in terms of actions after bridging to Near: Number of transactions, normalised
+fig = px.area(df3, x="DATE", y="NUMBER_TRANSACTIONS", color="APP_USED",
+              title='Top Categories in terms of actions after bridging to Near: Number of transactions, normalised', groupnorm='percent')
+fig.update_layout(legend_title=None, xaxis_title=None,
+                  yaxis_title="NUMBER_TRANSACTIONS")
+st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
+st.text(" \n")
+st.text(" \n")
+st.text(" \n")
+st.subheader('Cumulative Metrics')
+
+
+# Cumulative bridge from Ethereum to NEAR - (Weekly volume in $USD)
+fig = px.line(df, x="DATE", y="CUM_TOTAL_AMOUNT_USD",
+              color="SYMBOL", title='Cumulative bridge from Ethereum to NEAR - (Weekly volume in $USD)')
+fig.update_layout(showlegend=True, xaxis_title='NUMBER_TRANSACTIONS'.title(),
+                  yaxis_title=None)
+st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
 
 # Proportion of Volume Bridged From Ethereum to NEAR by Token
 fig = px.pie(df2, values="USD_VOLUME",
              names="SYMBOL", title='Proportion of Volume Bridged From Ethereum to NEAR by Token')
 fig.update_layout(legend_title=None, legend_y=0.5)
 fig.update_traces(textinfo='percent+value', textposition='inside')
-st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
-
-# Top Categories in terms of actions after bridging to Near: Number of transactions, normalised
-fig = px.area(df3, x="DATE", y="NUMBER_TRANSACTIONS", color="APP_USED",
-              title='Top Categories in terms of actions after bridging to Near: Number of transactions, normalised', groupnorm='percent')
-fig.update_layout(legend_title=None, xaxis_title=None,
-                  yaxis_title="NUMBER_TRANSACTIONS")
 st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
